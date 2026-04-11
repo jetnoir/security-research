@@ -488,7 +488,7 @@ Use parameterised queries. Train your developers. Test your applications before 
 ### Original references (c.2006 paper — preserved)
 
 1. Rain Forest Puppy. *NT Web Technology Vulnerabilities*. Phrack 54, article 8. 1998. [phrack.org/issues/54/8.html](http://phrack.org/issues/54/8.html)
-2. Anderson, R. *Why Information Security is Hard — An Economic Perspective*. ACSAC 2001. [cl.cam.ac.uk/~rja14/Papers/econo.pdf](https://www.cl.cam.ac.uk/~rja14/Papers/econo.pdf)
+2. Anderson, R. *Why Information Security is Hard — An Economic Perspective*. ACSAC 2001. [acsac.org/2001/papers/110.pdf](https://www.acsac.org/2001/papers/110.pdf)
 3. Department of Trade and Industry (DTI). *Information Security Breaches Survey* (annual). UK Government.
 4. SANS Institute. *SANS Top 20 Internet Security Vulnerabilities*. [sans.org](https://www.sans.org)
 5. BS 7799 / ISO 27001 — Information Security Management Systems.
