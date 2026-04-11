@@ -8,18 +8,6 @@ These documents cover applied security research, audit methodology, and updated 
 
 ## Documents
 
-### [Darwin/macOS Audit Methodology](darwin-audit-methodology.md) · [PDF](darwin-audit-methodology.pdf)
-
-A show-and-tell methodology document covering the techniques used to systematically audit Darwin/XNU kernel and macOS system components for security vulnerabilities. Topics include:
-
-- Legal framework (Computer Misuse Act 1990)
-- Attack surface enumeration (XPC services, kernel extensions, entitlements)
-- AI-assisted source audit and struct layout verification
-- Empirical VM-based testing with DTrace and fs_usage
-- Responsible disclosure and Apple Security Bounty
-
----
-
 ### [ICMP: Crafting and Other Uses — 2026 Edition](icmp-tunneling-2026.md) · [PDF](icmp-tunneling-2026.pdf)
 
 Updated edition of the author's 2001 GIAC GSEC paper, listed in the external links of the [Wikipedia ICMP tunnel article](https://en.wikipedia.org/wiki/ICMP_tunnel).
