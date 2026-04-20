@@ -8,6 +8,21 @@ These documents cover applied security research, audit methodology, and updated 
 
 ## Documents
 
+### [Spectral Complexity Screening for Binary Security Analysis — 2026](triageforge-2026.md) · [PDF](triageforge-2026.pdf)
+
+**A Random Matrix Theory Approach to Automated Vulnerability Triage**
+
+Original research applying spectral methods from quantum physics and network science to binary vulnerability analysis. Introduces TriageForge, a four-stage pipeline:
+
+- **C1** — SAT backbone proximity score (3-SAT phase transition at α_c ≈ 4.267)
+- **C2** — Random Matrix Theory spectral screen (Wigner semicircle, Tracy–Widom, graph energy, eigenvalue entropy z-scored against configuration-model null)
+- **C3** — Template dataflow analysis with cyclomatic complexity gate
+- **C6** — Symbolic taint analysis via angr
+
+Empirically validated on 335 macOS 26 PrivateFrameworks ARM64e binaries. 96.4% corpus reduction, characteristic false-positive taxonomy (cryptographic S-box tables, standard library sorting, no-network-surface binaries). First published application of RMT universality results and SAT backbone theory to binary security triage.
+
+---
+
 ### [ICMP: Crafting and Other Uses — 2026 Edition](icmp-tunneling-2026.md) · [PDF](icmp-tunneling-2026.pdf)
 
 Updated edition of the author's 2001 GIAC GSEC paper, listed in the external links of the [Wikipedia ICMP tunnel article](https://en.wikipedia.org/wiki/ICMP_tunnel).
