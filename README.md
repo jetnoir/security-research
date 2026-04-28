@@ -8,7 +8,9 @@ These documents cover applied security research, audit methodology, and updated 
 
 ## Documents
 
-### [Spectral Complexity Screening for Binary Security Analysis — 2026](triageforge-2026.md) · [PDF](triageforge-2026.pdf)
+### [Spectral Complexity Screening for Binary Security Analysis — 2026](triageforge-2026.md) · [PDF](triageforge-2026.pdf) · [Zenodo](https://doi.org/10.5281/zenodo.19855615)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19855615.svg)](https://doi.org/10.5281/zenodo.19855615)
 
 **A Random Matrix Theory Approach to Automated Vulnerability Triage**
 
@@ -20,6 +22,8 @@ Original research applying spectral methods from quantum physics and network sci
 - **C6** — Symbolic taint analysis via angr
 
 Empirically validated on 335 macOS 26 PrivateFrameworks ARM64e binaries. 96.4% corpus reduction, characteristic false-positive taxonomy (cryptographic S-box tables, standard library sorting, no-network-surface binaries). First published application of RMT universality results and SAT backbone theory to binary security triage.
+
+**Cite as:** Thomas, S. P. (2026). *Spectral Complexity Screening for Binary Security Analysis: A Random Matrix Theory Approach* (Version 1.0.0). Zenodo. <https://doi.org/10.5281/zenodo.19855615>
 
 ---
 
