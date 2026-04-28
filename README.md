@@ -1,6 +1,6 @@
 # Security Research — Publications
 
-Public research papers and methodology documents by **Stuart Thomas** ([@jetnoir](https://github.com/jetnoir)).
+Public research papers and methodology documents by **Stuart Thomas** ([@jetnoir](https://github.com/jetnoir) · [![ORCID](https://img.shields.io/badge/ORCID-0009--0008--4518--0064-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0008-4518-0064)).
 
 These documents cover applied security research, audit methodology, and updated editions of earlier published work. All content is educational. Proof-of-concept code is for defensive use only — see each document's legal notice.
 
@@ -23,7 +23,7 @@ Original research applying spectral methods from quantum physics and network sci
 
 Empirically validated on 335 macOS 26 PrivateFrameworks ARM64e binaries. 96.4% corpus reduction, characteristic false-positive taxonomy (cryptographic S-box tables, standard library sorting, no-network-surface binaries). First published application of RMT universality results and SAT backbone theory to binary security triage.
 
-**Cite as:** Thomas, S. P. (2026). *Spectral Complexity Screening for Binary Security Analysis: A Random Matrix Theory Approach* (Version 1.0.0). Zenodo. <https://doi.org/10.5281/zenodo.19855615>
+**Cite as:** Thomas, S. P. ([0009-0008-4518-0064](https://orcid.org/0009-0008-4518-0064)). (2026). *Spectral Complexity Screening for Binary Security Analysis: A Random Matrix Theory Approach* (Version 1.0.0). Zenodo. <https://doi.org/10.5281/zenodo.19855615>
 
 ---
 

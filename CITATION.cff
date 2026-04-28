@@ -1,0 +1,58 @@
+cff-version: 1.2.0
+message: "If you reference any of the papers in this repository, please cite the relevant work below."
+type: software
+title: "Security Research — Publications"
+abstract: >-
+  Public research papers and methodology documents by Stuart Paul Thomas.
+  Includes the TriageForge spectral binary screening paper, the SQL Injection
+  2026 edition (cited in the Wikipedia SQL injection article), and the ICMP
+  Crafting 2026 edition (cited in the Wikipedia ICMP tunnel article).
+authors:
+  - given-names: Stuart Paul
+    family-names: Thomas
+    orcid: "https://orcid.org/0009-0008-4518-0064"
+    affiliation: "Independent Researcher, Whitby, North Yorkshire, UK"
+    email: stuartpaulthomas@gmail.com
+    website: "https://stuart-thomas.com"
+url: "https://github.com/jetnoir/security-research"
+repository-code: "https://github.com/jetnoir/security-research"
+license: CC-BY-4.0
+keywords:
+  - security research
+  - vulnerability research
+  - random matrix theory
+  - SAT phase transition
+  - symbolic execution
+  - binary analysis
+  - SQL injection
+  - ICMP
+  - macOS
+  - methodology
+references:
+  - type: article
+    title: "Spectral Complexity Screening for Binary Security Analysis: A Random Matrix Theory Approach"
+    authors:
+      - given-names: Stuart Paul
+        family-names: Thomas
+        orcid: "https://orcid.org/0009-0008-4518-0064"
+    year: 2026
+    month: 4
+    publisher:
+      name: Zenodo
+    doi: 10.5281/zenodo.19855615
+    url: "https://doi.org/10.5281/zenodo.19855615"
+    version: 1.0.0
+preferred-citation:
+  type: article
+  title: "Spectral Complexity Screening for Binary Security Analysis: A Random Matrix Theory Approach"
+  authors:
+    - given-names: Stuart Paul
+      family-names: Thomas
+      orcid: "https://orcid.org/0009-0008-4518-0064"
+  year: 2026
+  month: 4
+  publisher:
+    name: Zenodo
+  doi: 10.5281/zenodo.19855615
+  url: "https://doi.org/10.5281/zenodo.19855615"
+  version: 1.0.0
