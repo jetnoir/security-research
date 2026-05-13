@@ -440,6 +440,87 @@ distinguishes "comment is ambiguous about behaviour" from "comment is a
 deliberate lure." The gate catches hallucinations; it does not catch traps
 whose premise is technically correct. What catches traps is Rule 12.
 
+### 4.5 Prior Art: The Swival Report
+
+The fourth reply supplied the prior filing. The Swival Security Scanner —
+an automated vulnerability analysis tool operated by Frank Denis — had
+analysed `pledge_kill()` before this submission and reached the same
+conclusion. The report is public at the GitHub commit de Raadt cited.[^swival-1]
+
+The Swival report classifies the finding as: `security_control_failure;
+severity high; confidence certain`. It identifies the same code path
+(`kern/kern_pledge.c`, the `pid == 0 || pid == p->p_p->ps_pid` branch),
+reaches the same conclusion about `kill(2)` semantics under process-group
+addressing, and proposes a patch removing the `pid == 0` exception:
+
+```diff
+-    if (pid == 0 || pid == p->p_p->ps_pid)
++    if (pid == p->p_p->ps_pid)
+```
+
+The factual analysis in both submissions is correct. `pid == 0` in
+`kill(2)` semantics routes to `killpg1()`, which iterates the caller's
+process group and signals all same-credential members. A `stdio`-pledged
+process sharing a process group with another same-credential process can,
+by this path, signal it. This is what the code does. The dispute is not
+about what the code does. It is about whether what the code does is a bug.
+
+**Framing.** The Swival report's classification — `severity high;
+confidence certain` — asserts that the design is wrong and proposes a
+specific patch. The EC submission framed the same finding as an inquiry,
+presented both fix paths (documentation patch or code patch) without
+advocating, and explicitly disclaimed exploitability beyond
+sandbox-degradation. The patch the Swival report proposes is the exact
+patch de Raadt's third reply refutes in full: removing `pid == 0` would
+break privsep process-tree teardown across large amounts of userland
+software that uses `kill(0, sig)` to clean up its own process hierarchy.
+
+**Differential engagement.** De Raadt's response to the Swival report
+appears in a single commit message: Frank Denis's scanner concluded that
+`kill(0,sig)` should not be allowed; the proposed diff was not considered
+nor tested for consequences. This is a dismissal recorded in version
+control rather than sent to the reporter. The EC submission, filed eight
+days later, received a four-reply thread: two immediate replies on the
+bugs@ list, and then — after the paper's first draft was complete — a
+direct email containing a detailed technical explanation of why
+`kill(0,sig)` is required, a historical note on how the pledge design
+emerged from studying real programs, and the one-word diff with a precise
+account of the pgid-0 semantics that the patch would have destroyed.
+
+Whether the differential engagement is attributable to framing (inquiry
+versus assertion) or to some other variable cannot be determined from this
+data. The Swival report may have received a technical reply not publicly
+indexed; Theo de Raadt's patience is not a controlled variable. What can
+be said is that the EC approach produced more technical feedback per filing
+than the automated scan did, and that the technical feedback is the only
+content in this exchange from which a researcher can learn something that
+changes future practice.
+
+**The chronology.** Revision 1.357 of `kern_pledge.c`, the one-word
+comment change, is dated 5 May 2026 — eight days before the EC
+submission. The comment the EC researcher, the Council LLMs, and the
+Swival scanner all read as "Killing another pid requires proc" had already
+been updated to "Killing another pid/pgid requires proc" by the time the
+EC filing was sent. The update had not closed the trap; it had only made
+the exception slightly more explicit while leaving the ambiguity about
+whether `pid == 0` falls under "killing another" intact. A reader who
+knows that `pid == 0` means the caller's *own* default process group
+reads "killing another pid/pgid requires proc" correctly: the caller's
+own group is not *another* group. A reader who does not know this reads
+the same sentence as excluding `pid == 0` from the scope of `stdio`
+permission. The LLMs — and the scanner — were in the second category.
+
+Running `git log -p` on the file before filing (Rule 12) would not have
+changed the substance of the finding. It would have shown that the comment
+had already been identified as misleading and patched in response to a
+prior filing, that the prior filing reached the same conclusion, and that
+the prior filing had been dismissed. This is information that would have
+materially changed the framing of the submission, even if the researcher
+still believed the design was worth questioning.
+
+[^swival-1]: Swival Security Scanner. *007-pledge-kill-allows-process-group-signaling.md*,
+`github.com/Swival/security-audits`, commit 015508ed, examined as prior art for §4.
+
 [^deraadt-2]: Theo de Raadt, OpenBSD bugs@openbsd.org, 13 May 2026 14:50 BST.
 [^deraadt-3]: Theo de Raadt, OpenBSD bugs@openbsd.org, 13 May 2026 14:55 BST.
 [^deraadt-4]: Theo de Raadt, OpenBSD bugs@openbsd.org, 13 May 2026 15:17 BST.
@@ -707,7 +788,10 @@ dyld_shared_cache extraction on macOS 26.4.1.
 [5] de Raadt, T. *bugs@openbsd.org* and direct email, four replies,
 13 May 2026. Reproduced verbatim under §4.4.
 
-[6] iVerify; NowSecure; SecurityWeek. *NICKNAME zero-click iMessage
+[6] Swival Security Scanner (Denis, F.). *007-pledge-kill-allows-process-group-signaling.md*,
+github.com/Swival/security-audits, commit 015508ed, prior art for §4.5.
+
+[7] iVerify; NowSecure; SecurityWeek. *NICKNAME zero-click iMessage
 exploit*, multiple sources, 2025-06, providing public context for the
 day's `imagent` cluster analyses.
 
