@@ -33,14 +33,17 @@ pre-filing review using a panel of four commodity large language models
 empirical-verification gate inserted between LLM verdict and submission. In
 the course of the day, three vulnerability reports were filed (one with
 Apple Security Bounty, two with the OpenBSD developers); fifteen separate
-candidate findings were refuted before filing; eleven novel methodology
+candidate findings were refuted before filing; twelve novel methodology
 rules were banked; and — to the author's considerable amusement — two of
 four LLMs were caught hallucinating identical fictitious text from an
 OpenBSD manual page that has not contained that text since at least the 7.7
 release. The paper presents the methodology, the day's case studies, the
 hallucination-detection technique, and a candid post-mortem of the
-filings — including a pair of corrections from Theo de Raadt that are
-reproduced verbatim because they are funnier in the original.
+filings — including four replies from Theo de Raadt reproduced verbatim:
+the first two because they are funnier in the original; the last two because
+one of them explains why Frank Denis received the same reply from the same
+commit, why the comment that triggered the finding was left in place on
+purpose, and what the researcher was supposed to learn from it.
 
 **Keywords:** vulnerability research methodology · large language models ·
 hallucination detection · responsible disclosure · pre-filing review ·
@@ -352,19 +355,102 @@ not KASLR (the Linux/macOS terminology for runtime address-space
 randomisation). The author had used the broader-industry term. The
 correction is technically correct, and another methodology rule was banked.
 
-The pledge `kill(0)` thread closed with the first reply quoted above.
 The `ktr_psig` thread remains open at the time of writing; the
 terminology correction is not a substantive merit ruling.
+
+Two further replies to the pledge finding arrived at 17:22 and 17:31 BST,
+in a new standalone thread titled "kill 0", sent directly rather than via
+the original bugs@ thread. The third reply:
+
+> You may also find the most recent commit to `kern_pledge.c` educational:
+>
+> ```
+> revision 1.357
+> date: 2026/05/05 13:00:00;  author: deraadt;  state: Exp;
+> lines: +2 -2;  commitid: UE6rwrmkqo6KAmIU;
+> Frank Denis using the Swival Security Scanner concludes that
+> kill(0,sig) should not be allowed because of a source code comment.
+> Actually, kill of the default pgid 0 MUST be allowed or large amounts
+> of userland software won't work.  What pledge prevents is playing with
+> other process groups (ie. -pid where pid is not 0) which require
+> permission from the "proc" pledge.  Killing the default pgrp 0 is a
+> common way for privsep (and other) software to tear itself down its
+> process trees, for cases where a pipe read of 0 doesn't work.
+> The current behaviour is intentional, and the proposed diff was not
+> considered nor tested for consequences.
+> Change the comment very subtly to see which AI/human collaboration
+> fails next.
+> ```
+>
+> 1) it is required throughout the tree in many subtle places
+>
+> 2) The original pledge page said:
+>
+>        In general, these modes were selected by studying the operation
+>        of many programs using libc and other such interfaces, [...]
+>
+>    But when I wrote that text, I was very much thinking about how
+>    pledge itself had been designed from the beginning, by considering
+>    what programs do and why, and facing reality head-on.
+>
+> 3) The commit mentioned above does this:
+>
+>        /*
+>    -    * Can kill self with "stdio".  Killing another pid
+>    +    * Can kill self with "stdio".  Killing another pid/pgid
+>         * requires "proc"
+>
+>    Yes, it is extremely subtle.  The concept is that pgid 0 is "your
+>    process environment of children and parents and if you don't handle
+>    them all in this way, one of them is going to spin off into some
+>    dangerous mode".  In my past experience, this is particularly
+>    relevant for old code with select bugs relating to pipe handling.
+>    So you need a clean way of killing the hierarchy, and thus this
+>    remains.  Terminating in this way is clean, compared to the risks
+>    of not cleaning up.[^deraadt-5]
+
+The fourth reply, nine minutes later, supplied a direct link:
+
+> Here is the previous report.
+>
+> https://github.com/Swival/security-audits/blob/015508ed21b8c5fabfd699ddbad6f82bf60780ed/openbsd-kernel/007-pledge-kill-allows-process-group-signaling.md[^deraadt-6]
+
+The commit log in the third reply contains the answer the submission was
+implicitly asking for. The `kill(0,sig)` exception is not an oversight; it
+is deliberate design, required for privsep process-tree teardown in large
+amounts of userland software. The comment that triggered the finding said
+"Killing another pid requires proc" — which is accurate about *other
+processes* but leaves the pgid-0 case implicit. Revision 1.357, dated
+5 May 2026, changed one word: "pid" became "pid/pgid". The behaviour did
+not change. The comment became more precise.
+
+The commit message explains why: *"Change the comment very subtly to see
+which AI/human collaboration fails next."* The prior collaboration that
+failed was Frank Denis — creator of libsodium — using the Swival Security
+Scanner. He filed in the same direction. He received the same response. The
+comment was already known to be misleading; the one-word fix was written
+with the explicit expectation that the next AI-augmented researcher to read
+the old wording would draw the same inference, and that the inference would
+be wrong in the same way.
+
+They did. This paper documents it.
+
+This is the empirical gate's limit. No amount of empirical testing
+distinguishes "comment is ambiguous about behaviour" from "comment is a
+deliberate lure." The gate catches hallucinations; it does not catch traps
+whose premise is technically correct. What catches traps is Rule 12.
 
 [^deraadt-2]: Theo de Raadt, OpenBSD bugs@openbsd.org, 13 May 2026 14:50 BST.
 [^deraadt-3]: Theo de Raadt, OpenBSD bugs@openbsd.org, 13 May 2026 14:55 BST.
 [^deraadt-4]: Theo de Raadt, OpenBSD bugs@openbsd.org, 13 May 2026 15:17 BST.
+[^deraadt-5]: Theo de Raadt, direct email, 13 May 2026 17:22 BST.
+[^deraadt-6]: Theo de Raadt, direct email, 13 May 2026 17:31 BST.
 
 ---
 
-## 5. The Eleven Rules
+## 5. The Twelve Rules
 
-Eleven distinct procedural rules were either established for the first
+Twelve distinct procedural rules were either established for the first
 time or substantially refined over the course of the day. They are listed
 here in order of the candidate that produced them, with brief commentary.
 
@@ -440,6 +526,17 @@ here in order of the candidate that produced them, with brief commentary.
     asked for one additional sanity-check that would have pre-empted
     the question.)
 
+12. **Check `git log -p` on the file before filing.** A subtle edit to
+    a comment in security-sensitive code may be a deliberate signal —
+    either clarifying intent for the next reader, or, in projects where
+    maintainers know they are being read by AI-augmented researchers,
+    an explicit test. Revision 1.357 of `kern_pledge.c` edits the
+    comment from "Killing another pid" to "Killing another pid/pgid"
+    for exactly this purpose; the commit message says so. Had the
+    researcher run `git log -p sys/kern/kern_pledge.c` before filing,
+    the commit and its message would have appeared. (Source: de Raadt
+    "kill 0" reply, §4.4.)
+
 ---
 
 ## 6. Discussion
@@ -478,7 +575,7 @@ downstream consumers in proportion to its output volume.
 ### 6.3 The Solo-Research Throughput Argument
 
 The day's tally was three filings sent, fifteen candidates refuted, and
-eleven methodology rules banked. The refute-to-file ratio of 5:1 is
+twelve methodology rules banked. The refute-to-file ratio of 5:1 is
 high. The author's prior baseline was closer to 2:1. The difference is
 attributable, in the author's belief, to the Council-plus-empirical-gate
 combination; absent the Council, several of the refuted candidates
@@ -515,8 +612,8 @@ systems and roughly nine distinct attack surfaces. The day was unusually
 high-volume by the author's standards and may not reflect typical
 throughput. The four LLMs are commodity products at specific versions on
 13 May 2026; their behaviour, including their hallucination patterns, is
-not stable across releases. The maintainer-reply data is two replies
-from one developer, replying to one researcher, on one mailing list; it
+not stable across releases. The maintainer-reply data is four replies from one developer, replying to
+one researcher, across one mailing list and one direct email thread; it
 is supportive of the throughput-cost argument but is not a statistical
 sample.
 
@@ -607,8 +704,8 @@ release v25.02, examined as basis for Apple Model I/O Phase 3 analysis.
 [4] Blacktop. *ipsw*, github.com/blacktop/ipsw, v3.1.680, used for
 dyld_shared_cache extraction on macOS 26.4.1.
 
-[5] de Raadt, T. *bugs@openbsd.org*, three replies, 13 May 2026.
-Reproduced verbatim under §4.4.
+[5] de Raadt, T. *bugs@openbsd.org* and direct email, four replies,
+13 May 2026. Reproduced verbatim under §4.4.
 
 [6] iVerify; NowSecure; SecurityWeek. *NICKNAME zero-click iMessage
 exploit*, multiple sources, 2025-06, providing public context for the
