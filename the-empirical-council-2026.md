@@ -2,8 +2,10 @@
 Title:    The Empirical Council: Adversarial LLM Review with Hallucination Detection in Solo Security Research
 Author:   Stuart Thomas
 Date:     2026-05-13
+DOI:      10.5281/zenodo.20167726
 License:  Creative Commons Attribution 4.0 International (CC BY 4.0)
           https://creativecommons.org/licenses/by/4.0/
+ORCID:    0009-0008-4518-0064
 Format:   Markdown
 -->
 
@@ -14,7 +16,7 @@ Format:   Markdown
 **A single-day case study of three filings, fifteen refutations, and the manpage that wasn't**
 
 **Stuart Thomas** · 13 May 2026
-*Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)*
+*Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)* · DOI: [10.5281/zenodo.20167726](https://doi.org/10.5281/zenodo.20167726) · ORCID: [0009-0008-4518-0064](https://orcid.org/0009-0008-4518-0064)
 
 ---
 
